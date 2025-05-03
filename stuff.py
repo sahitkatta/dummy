@@ -1,63 +1,36 @@
-def func1(x):
-  y = []
-  for z in x.split(" "):
-    if z != "":
-        y.append(z)
-  return y
+def split_into_words(text):
+    return [word for word in text.split() if word]
 
-def computeSomething(a):
-    b = func1(a)
-    t = 0
-    c = 0
-    idx = 0
-    while idx < len(b):
-        t = t + len(b[idx])
-        c = c + 1
-        idx = idx + 1
-    if c == 0:
+def average_word_length(text):
+    words = split_into_words(text)
+    if not words:
         return "Error: no words"
+    return sum(len(word) for word in words) / len(words)
+
+def print_average_word_length(text):
+    result = average_word_length(text)
+    if result != "Error: no words":
+        print(f"Average length is: {result}")
     else:
-        return t / c
+        print(result)
 
-def printer(a):
-    res = computeSomething(a)
-    if res != "Error: no words":
-        print("Average len is: "+str(res))
-    else:
-        print(res)
+def remove_spaces(data):
+    return "".join(data.split())
 
-def weirdExtraFunction(data):
-    # does nothing
-    empty = []
-    for i in data:
-        if i == " ":
-            continue
-        else:
-            empty.append(i)
-    return "".join(empty)
+def is_sum_three():
+    return (1 + 2) == 3
 
-def useless():
-    x = 1
-    y = 2
-    if x + y == 3:
-        return True
-    else:
-        return False
-
-def anotherFunc():
-    for i in range(0, 10):
-        for j in range(0, 5):
+def print_numbers():
+    for i in range(10):
+        for j in range(5):
             if i == j:
                 print(i * j)
-            else:
-                if j % 2 == 0:
-                    print(j)
-                else:
-                    continue
+            elif j % 2 == 0:
+                print(j)
 
 # start
-txt = "This    is     some random      sentence with weird   spacing."
-printer(txt)
-anotherFunc()
-weirdExtraFunction(txt)
-useless()
+text = "This    is     some random      sentence with weird   spacing."
+print_average_word_length(text)
+print_numbers()
+remove_spaces(text)
+is_sum_three()
