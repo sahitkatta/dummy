@@ -3,416 +3,70 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TransUnion - AssistDesk</title>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <title>OneTrue Assist</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        :root {
-            --primary-color: #03A9F4;
-            --primary-dark: #0288D1;
-            --primary-light: #B3E5FC;
-            --accent-color: #00BCD4;
-            --background-color: #F5F5F5;
-            --surface-color: #FFFFFF;
-            --text-primary: #212121;
-            --text-secondary: #757575;
-            --divider-color: #E0E0E0;
-            --shadow-light: 0 2px 4px rgba(0,0,0,0.1);
-            --shadow-medium: 0 4px 8px rgba(0,0,0,0.12);
-            --shadow-heavy: 0 8px 16px rgba(0,0,0,0.15);
-        }
-
-        body {
-            font-family: 'Roboto', sans-serif;
-            background-color: var(--background-color);
-            color: var(--text-primary);
-            line-height: 1.6;
-        }
-
-        .app-container {
-            display: flex;
-            min-height: 100vh;
-        }
-
-        /* Sidebar */
-        .sidebar {
-            width: 280px;
-            background-color: var(--surface-color);
-            box-shadow: var(--shadow-medium);
-            position: fixed;
-            height: 100vh;
-            overflow-y: auto;
-            z-index: 1000;
-        }
-
-        .sidebar-header {
-            padding: 24px 20px;
-            border-bottom: 1px solid var(--divider-color);
-        }
-
-        .logo {
-            font-size: 24px;
-            font-weight: 700;
-            color: var(--primary-color);
-            margin-bottom: 8px;
-        }
-
-        .product-area {
-            font-size: 18px;
-            font-weight: 500;
-            color: var(--text-primary);
-        }
-
-        .nav-menu {
-            padding: 16px 0;
-        }
-
-        .nav-item {
-            display: flex;
-            align-items: center;
-            padding: 12px 20px;
-            color: var(--text-secondary);
-            text-decoration: none;
-            transition: all 0.2s ease;
-            border-left: 3px solid transparent;
-        }
-
-        .nav-item:hover {
-            background-color: var(--primary-light);
-            color: var(--primary-dark);
-        }
-
-        .nav-item.active {
-            background-color: var(--primary-light);
-            color: var(--primary-dark);
-            border-left-color: var(--primary-color);
-            font-weight: 500;
-        }
-
-        .nav-item .material-icons {
-            margin-right: 16px;
-            font-size: 20px;
-        }
-
-        /* Main Content */
-        .main-content {
-            flex: 1;
-            margin-left: 280px;
-            padding: 32px;
-        }
-
-        .content-header {
-            margin-bottom: 32px;
-        }
-
-        .page-title {
-            font-size: 32px;
-            font-weight: 300;
-            color: var(--text-primary);
-            margin-bottom: 8px;
-        }
-
-        .page-subtitle {
-            font-size: 16px;
-            color: var(--text-secondary);
-            margin-bottom: 24px;
-        }
-
-        .search-container {
-            display: flex;
-            align-items: center;
-            background-color: var(--surface-color);
-            border-radius: 8px;
-            padding: 12px 16px;
-            box-shadow: var(--shadow-light);
-            max-width: 400px;
-        }
-
-        .search-container .material-icons {
-            color: var(--text-secondary);
-            margin-right: 12px;
-        }
-
-        .search-input {
-            border: none;
-            outline: none;
-            flex: 1;
-            font-size: 16px;
-            color: var(--text-primary);
-        }
-
-        .search-input::placeholder {
-            color: var(--text-secondary);
-        }
-
-        /* Tabs */
-        .tabs-container {
-            margin-bottom: 32px;
-        }
-
-        .tabs-list {
-            display: flex;
-            border-bottom: 1px solid var(--divider-color);
-            margin-bottom: 24px;
-        }
-
-        .tab {
-            padding: 16px 24px;
-            background: none;
-            border: none;
-            font-size: 16px;
-            color: var(--text-secondary);
-            cursor: pointer;
-            border-bottom: 2px solid transparent;
-            transition: all 0.2s ease;
-            font-family: inherit;
-        }
-
-        .tab:hover {
-            color: var(--primary-color);
-        }
-
-        .tab.active {
-            color: var(--primary-color);
-            border-bottom-color: var(--primary-color);
-            font-weight: 500;
-        }
-
-        .tab-content {
-            display: none;
-        }
-
-        .tab-content.active {
-            display: block;
-        }
-
-        /* Section Headers */
-        .section-header {
-            margin-bottom: 24px;
-        }
-
-        .section-title {
-            font-size: 24px;
-            font-weight: 400;
-            color: var(--text-primary);
-            margin-bottom: 8px;
-        }
-
-        .section-subtitle {
-            font-size: 16px;
-            color: var(--text-secondary);
-        }
-
-        /* Cards Grid */
-        .cards-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-            gap: 24px;
-        }
-
-        .card {
-            background-color: var(--surface-color);
-            border-radius: 12px;
-            padding: 24px;
-            box-shadow: var(--shadow-light);
-            transition: all 0.2s ease;
-            border: 1px solid var(--divider-color);
-        }
-
-        .card:hover {
-            box-shadow: var(--shadow-medium);
-            transform: translateY(-2px);
-        }
-
-        .card-header {
-            margin-bottom: 16px;
-        }
-
-        .card-title-row {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            margin-bottom: 12px;
-        }
-
-        .card-icon {
-            width: 40px;
-            height: 40px;
-            background-color: var(--primary-light);
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: var(--primary-color);
-            flex-shrink: 0;
-        }
-
-        .card-icon .material-icons {
-            font-size: 20px;
-        }
-
-        .card-eyebrow {
-            display: inline-block;
-            background-color: var(--primary-light);
-            color: var(--primary-dark);
-            padding: 4px 12px;
-            border-radius: 16px;
-            font-size: 12px;
-            font-weight: 500;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            margin-bottom: 12px;
-        }
-
-        .card-title {
-            font-size: 20px;
-            font-weight: 500;
-            color: var(--text-primary);
-            margin-bottom: 12px;
-        }
-
-        .card-description {
-            color: var(--text-secondary);
-            line-height: 1.6;
-            margin-bottom: 20px;
-        }
-
-        .card-footer {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .card-meta {
-            display: flex;
-            align-items: center;
-            color: var(--text-secondary);
-            font-size: 14px;
-        }
-
-        .card-meta .material-icons {
-            font-size: 16px;
-            margin-right: 4px;
-        }
-
-        .meta-badge {
-            background-color: var(--background-color);
-            color: var(--text-secondary);
-            padding: 4px 8px;
-            border-radius: 4px;
-            font-size: 12px;
-            font-weight: 500;
-        }
-
-        .deploy-button {
-            background-color: var(--primary-color);
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 6px;
-            font-size: 14px;
-            font-weight: 500;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .deploy-button:hover {
-            background-color: var(--primary-dark);
-            transform: translateY(-1px);
-        }
-
-        .deploy-button .material-icons {
-            font-size: 16px;
-        }
-
-        /* Responsive Design */
-        @media (max-width: 768px) {
-            .sidebar {
-                transform: translateX(-100%);
-                transition: transform 0.3s ease;
-            }
-
-            .main-content {
-                margin-left: 0;
-                padding: 16px;
-            }
-
-            .cards-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .tabs-list {
-                overflow-x: auto;
-                white-space: nowrap;
-            }
-
-            .tab {
-                flex-shrink: 0;
-            }
-        }
-
-        @media (min-width: 769px) and (max-width: 1024px) {
-            .cards-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-        }
-
-        @media (min-width: 1025px) {
-            .cards-grid {
-                grid-template-columns: repeat(3, 1fr);
-            }
-        }
-    </style>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <div class="app-container">
-        <!-- Sidebar -->
-        <nav class="sidebar">
-            <div class="sidebar-header">
-                <div class="logo">TransUnion</div>
-                <div class="product-area">AssistDesk</div>
+    <!-- Top Navigation Bar -->
+    <nav class="top-navbar">
+        <div class="navbar-container">
+            <div class="logo">
+                <img src="logo.svg" alt="OneTrue Assist Logo" class="logo-icon">
+                <span class="logo-text">OneTru Non-Credit</span>
+                <span class="logo-secondary-text">OneTru Assist</span>
             </div>
+        </div>
+    </nav>
+
+    <!-- Main App Container -->
+    <div class="app-container">
+        <!-- Side Navigation -->
+        <nav class="sidebar">
             <div class="nav-menu">
-                <a href="#" class="nav-item">
-                    <span class="material-icons">dashboard</span>
-                    Dashboard
-                </a>
                 <a href="#" class="nav-item active">
-                    <span class="material-icons">support_agent</span>
-                    AssistDesk
+                    <span class="material-icons" width="20px !important" >auto_awesome</span>
+                    <span class="nav-text">OneTruAssist</span>
                 </a>
                 <a href="#" class="nav-item">
-                    <span class="material-icons">analytics</span>
-                    Analytics
+                    <span class="material-icons" width="20px !important" >home</span>
+                    <span class="nav-text">Home</span>
                 </a>
                 <a href="#" class="nav-item">
-                    <span class="material-icons">settings</span>
-                    Settings
+                    <span class="material-icons" width="20px !important" >bar_chart_4_bars</span>
+                    <span class="nav-text">Data</span>
+                </a>
+                <a href="#" class="nav-item">
+                    <span class="material-icons" width="20px !important" >shield</span>
+                    <span class="nav-text">Governance</span>
+                </a>
+                <a href="#" class="nav-item">
+                    <span class="material-icons" width="20px !important" >build</span>
+                    <span class="nav-text">Operations</span>
+                </a>
+                <a href="#" class="nav-item">
+                    <span class="material-icons" width="20px !important" >settings_outlined</span>
+                    <span class="nav-text">Administration</span>
                 </a>
             </div>
         </nav>
 
-        <!-- Main Content -->
+        <!-- Main Content Area -->
         <main class="main-content">
+            <!-- Page Header -->
             <div class="content-header">
-                <h1 class="page-title">AssistDesk</h1>
-                <p class="page-subtitle">Browse and deploy assistants, agents, and squads for your workflow</p>
+                <div class="header-text">
+                    <h1 class="page-title">OneTrue Assist</h1>
+                    <p class="page-subtitle">Browse and deploy assistants, agents, and squads for your workflow</p>
+                </div>
                 <div class="search-container">
                     <span class="material-icons">search</span>
                     <input type="text" class="search-input" placeholder="Search assistants, agents, and squads…">
                 </div>
             </div>
 
-            <!-- Tabs -->
+            <!-- Tabs Navigation -->
             <div class="tabs-container">
                 <div class="tabs-list" role="tablist">
                     <button class="tab active" role="tab" aria-selected="true" data-tab="assistants">Assistants</button>
@@ -421,7 +75,7 @@
                     <button class="tab" role="tab" aria-selected="false" data-tab="squads">Squads</button>
                 </div>
 
-                <!-- Assistants Tab -->
+                <!-- Assistants Tab Content -->
                 <div class="tab-content active" id="assistants">
                     <div class="section-header">
                         <h2 class="section-title">Assistants</h2>
@@ -499,7 +153,7 @@
                     </div>
                 </div>
 
-                <!-- Task-based Agents Tab -->
+                <!-- Task-based Agents Tab Content -->
                 <div class="tab-content" id="task-agents">
                     <div class="section-header">
                         <h2 class="section-title">Task-based Agents</h2>
@@ -574,7 +228,7 @@
                     </div>
                 </div>
 
-                <!-- Goal-based Agents Tab -->
+                <!-- Goal-based Agents Tab Content -->
                 <div class="tab-content" id="goal-agents">
                     <div class="section-header">
                         <h2 class="section-title">Goal-based Agents</h2>
@@ -649,7 +303,7 @@
                     </div>
                 </div>
 
-                <!-- Squads Tab -->
+                <!-- Squads Tab Content -->
                 <div class="tab-content" id="squads">
                     <div class="section-header">
                         <h2 class="section-title">Squads</h2>
@@ -683,50 +337,6 @@
         </main>
     </div>
 
-    <script>
-        // Tab functionality
-        document.addEventListener('DOMContentLoaded', function() {
-            const tabs = document.querySelectorAll('.tab');
-            const tabContents = document.querySelectorAll('.tab-content');
-
-            tabs.forEach(tab => {
-                tab.addEventListener('click', function() {
-                    const targetTab = this.getAttribute('data-tab');
-                    
-                    // Remove active class from all tabs and contents
-                    tabs.forEach(t => {
-                        t.classList.remove('active');
-                        t.setAttribute('aria-selected', 'false');
-                    });
-                    tabContents.forEach(content => {
-                        content.classList.remove('active');
-                    });
-                    
-                    // Add active class to clicked tab and corresponding content
-                    this.classList.add('active');
-                    this.setAttribute('aria-selected', 'true');
-                    document.getElementById(targetTab).classList.add('active');
-                });
-            });
-
-            // Search functionality
-            const searchInput = document.querySelector('.search-input');
-            searchInput.addEventListener('input', function() {
-                const searchTerm = this.value.toLowerCase();
-                const cards = document.querySelectorAll('.card');
-                
-                cards.forEach(card => {
-                    const title = card.querySelector('.card-title').textContent.toLowerCase();
-                    const description = card.querySelector('.card-description').textContent.toLowerCase();
-                    
-                    if (title.includes(searchTerm) || description.includes(searchTerm)) {
-                        card.style.display = 'block';
-                    } else {
-                        card.style.display = searchTerm ? 'none' : 'block';
-                    }
-                });
-            });
-        });
-    </script>
+    <script src="script.js"></script>
 </body>
 </html>
