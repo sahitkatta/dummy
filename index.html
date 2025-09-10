@@ -1,0 +1,732 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TransUnion - AssistDesk</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-color: #03A9F4;
+            --primary-dark: #0288D1;
+            --primary-light: #B3E5FC;
+            --accent-color: #00BCD4;
+            --background-color: #F5F5F5;
+            --surface-color: #FFFFFF;
+            --text-primary: #212121;
+            --text-secondary: #757575;
+            --divider-color: #E0E0E0;
+            --shadow-light: 0 2px 4px rgba(0,0,0,0.1);
+            --shadow-medium: 0 4px 8px rgba(0,0,0,0.12);
+            --shadow-heavy: 0 8px 16px rgba(0,0,0,0.15);
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: var(--background-color);
+            color: var(--text-primary);
+            line-height: 1.6;
+        }
+
+        .app-container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 280px;
+            background-color: var(--surface-color);
+            box-shadow: var(--shadow-medium);
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+            z-index: 1000;
+        }
+
+        .sidebar-header {
+            padding: 24px 20px;
+            border-bottom: 1px solid var(--divider-color);
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin-bottom: 8px;
+        }
+
+        .product-area {
+            font-size: 18px;
+            font-weight: 500;
+            color: var(--text-primary);
+        }
+
+        .nav-menu {
+            padding: 16px 0;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            padding: 12px 20px;
+            color: var(--text-secondary);
+            text-decoration: none;
+            transition: all 0.2s ease;
+            border-left: 3px solid transparent;
+        }
+
+        .nav-item:hover {
+            background-color: var(--primary-light);
+            color: var(--primary-dark);
+        }
+
+        .nav-item.active {
+            background-color: var(--primary-light);
+            color: var(--primary-dark);
+            border-left-color: var(--primary-color);
+            font-weight: 500;
+        }
+
+        .nav-item .material-icons {
+            margin-right: 16px;
+            font-size: 20px;
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            margin-left: 280px;
+            padding: 32px;
+        }
+
+        .content-header {
+            margin-bottom: 32px;
+        }
+
+        .page-title {
+            font-size: 32px;
+            font-weight: 300;
+            color: var(--text-primary);
+            margin-bottom: 8px;
+        }
+
+        .page-subtitle {
+            font-size: 16px;
+            color: var(--text-secondary);
+            margin-bottom: 24px;
+        }
+
+        .search-container {
+            display: flex;
+            align-items: center;
+            background-color: var(--surface-color);
+            border-radius: 8px;
+            padding: 12px 16px;
+            box-shadow: var(--shadow-light);
+            max-width: 400px;
+        }
+
+        .search-container .material-icons {
+            color: var(--text-secondary);
+            margin-right: 12px;
+        }
+
+        .search-input {
+            border: none;
+            outline: none;
+            flex: 1;
+            font-size: 16px;
+            color: var(--text-primary);
+        }
+
+        .search-input::placeholder {
+            color: var(--text-secondary);
+        }
+
+        /* Tabs */
+        .tabs-container {
+            margin-bottom: 32px;
+        }
+
+        .tabs-list {
+            display: flex;
+            border-bottom: 1px solid var(--divider-color);
+            margin-bottom: 24px;
+        }
+
+        .tab {
+            padding: 16px 24px;
+            background: none;
+            border: none;
+            font-size: 16px;
+            color: var(--text-secondary);
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+            transition: all 0.2s ease;
+            font-family: inherit;
+        }
+
+        .tab:hover {
+            color: var(--primary-color);
+        }
+
+        .tab.active {
+            color: var(--primary-color);
+            border-bottom-color: var(--primary-color);
+            font-weight: 500;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* Section Headers */
+        .section-header {
+            margin-bottom: 24px;
+        }
+
+        .section-title {
+            font-size: 24px;
+            font-weight: 400;
+            color: var(--text-primary);
+            margin-bottom: 8px;
+        }
+
+        .section-subtitle {
+            font-size: 16px;
+            color: var(--text-secondary);
+        }
+
+        /* Cards Grid */
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 24px;
+        }
+
+        .card {
+            background-color: var(--surface-color);
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: var(--shadow-light);
+            transition: all 0.2s ease;
+            border: 1px solid var(--divider-color);
+        }
+
+        .card:hover {
+            box-shadow: var(--shadow-medium);
+            transform: translateY(-2px);
+        }
+
+        .card-header {
+            margin-bottom: 16px;
+        }
+
+        .card-title-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+
+        .card-icon {
+            width: 40px;
+            height: 40px;
+            background-color: var(--primary-light);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary-color);
+            flex-shrink: 0;
+        }
+
+        .card-icon .material-icons {
+            font-size: 20px;
+        }
+
+        .card-eyebrow {
+            display: inline-block;
+            background-color: var(--primary-light);
+            color: var(--primary-dark);
+            padding: 4px 12px;
+            border-radius: 16px;
+            font-size: 12px;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 12px;
+        }
+
+        .card-title {
+            font-size: 20px;
+            font-weight: 500;
+            color: var(--text-primary);
+            margin-bottom: 12px;
+        }
+
+        .card-description {
+            color: var(--text-secondary);
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        .card-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .card-meta {
+            display: flex;
+            align-items: center;
+            color: var(--text-secondary);
+            font-size: 14px;
+        }
+
+        .card-meta .material-icons {
+            font-size: 16px;
+            margin-right: 4px;
+        }
+
+        .meta-badge {
+            background-color: var(--background-color);
+            color: var(--text-secondary);
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .deploy-button {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .deploy-button:hover {
+            background-color: var(--primary-dark);
+            transform: translateY(-1px);
+        }
+
+        .deploy-button .material-icons {
+            font-size: 16px;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+                transition: transform 0.3s ease;
+            }
+
+            .main-content {
+                margin-left: 0;
+                padding: 16px;
+            }
+
+            .cards-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .tabs-list {
+                overflow-x: auto;
+                white-space: nowrap;
+            }
+
+            .tab {
+                flex-shrink: 0;
+            }
+        }
+
+        @media (min-width: 769px) and (max-width: 1024px) {
+            .cards-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (min-width: 1025px) {
+            .cards-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar -->
+        <nav class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">TransUnion</div>
+                <div class="product-area">AssistDesk</div>
+            </div>
+            <div class="nav-menu">
+                <a href="#" class="nav-item">
+                    <span class="material-icons">dashboard</span>
+                    Dashboard
+                </a>
+                <a href="#" class="nav-item active">
+                    <span class="material-icons">support_agent</span>
+                    AssistDesk
+                </a>
+                <a href="#" class="nav-item">
+                    <span class="material-icons">analytics</span>
+                    Analytics
+                </a>
+                <a href="#" class="nav-item">
+                    <span class="material-icons">settings</span>
+                    Settings
+                </a>
+            </div>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <div class="content-header">
+                <h1 class="page-title">AssistDesk</h1>
+                <p class="page-subtitle">Browse and deploy assistants, agents, and squads for your workflow</p>
+                <div class="search-container">
+                    <span class="material-icons">search</span>
+                    <input type="text" class="search-input" placeholder="Search assistants, agents, and squads…">
+                </div>
+            </div>
+
+            <!-- Tabs -->
+            <div class="tabs-container">
+                <div class="tabs-list" role="tablist">
+                    <button class="tab active" role="tab" aria-selected="true" data-tab="assistants">Assistants</button>
+                    <button class="tab" role="tab" aria-selected="false" data-tab="task-agents">Task-based Agents</button>
+                    <button class="tab" role="tab" aria-selected="false" data-tab="goal-agents">Goal-based Agents</button>
+                    <button class="tab" role="tab" aria-selected="false" data-tab="squads">Squads</button>
+                </div>
+
+                <!-- Assistants Tab -->
+                <div class="tab-content active" id="assistants">
+                    <div class="section-header">
+                        <h2 class="section-title">Assistants</h2>
+                        <p class="section-subtitle">Specialized assistants for data management and exploration tasks</p>
+                    </div>
+                    <div class="cards-grid">
+                        <div class="card">
+                            <div class="card-header">
+                                <span class="card-eyebrow">Assistant</span>
+                                <div class="card-title-row">
+                                    <div class="card-icon">
+                                        <span class="material-icons">cloud_upload</span>
+                                    </div>
+                                    <h3 class="card-title">Data Onboarding Assistant</h3>
+                                </div>
+                            </div>
+                            <p class="card-description">Streamlines data import, validation, and initial setup processes. Handles multiple data formats and provides intelligent mapping suggestions.</p>
+                            <div class="card-footer">
+                                <div class="card-meta">
+                                    <span class="material-icons">schedule</span>
+                                    <span>~15 min setup</span>
+                                </div>
+                                <button class="deploy-button">
+                                    Deploy
+                                    <span class="material-icons">arrow_forward</span>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="card">
+                            <div class="card-header">
+                                <span class="card-eyebrow">Assistant</span>
+                                <div class="card-title-row">
+                                    <div class="card-icon">
+                                        <span class="material-icons">analytics</span>
+                                    </div>
+                                    <h3 class="card-title">Data Exploration Assistant</h3>
+                                </div>
+                            </div>
+                            <p class="card-description">Provides intelligent data analysis, pattern recognition, and visualization suggestions. Generates insights and recommendations automatically.</p>
+                            <div class="card-footer">
+                                <div class="card-meta">
+                                    <span class="material-icons">schedule</span>
+                                    <span>~10 min setup</span>
+                                </div>
+                                <button class="deploy-button">
+                                    Deploy
+                                    <span class="material-icons">arrow_forward</span>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="card">
+                            <div class="card-header">
+                                <span class="card-eyebrow">Assistant</span>
+                                <div class="card-title-row">
+                                    <div class="card-icon">
+                                        <span class="material-icons">edit_note</span>
+                                    </div>
+                                    <h3 class="card-title">Content Creation Assistant</h3>
+                                </div>
+                            </div>
+                            <p class="card-description">Generates high-quality content including documents, reports, and presentations with brand consistency and tone matching.</p>
+                            <div class="card-footer">
+                                <div class="card-meta">
+                                    <span class="material-icons">schedule</span>
+                                    <span>~5 min setup</span>
+                                </div>
+                                <button class="deploy-button">
+                                    Deploy
+                                    <span class="material-icons">arrow_forward</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Task-based Agents Tab -->
+                <div class="tab-content" id="task-agents">
+                    <div class="section-header">
+                        <h2 class="section-title">Task-based Agents</h2>
+                        <p class="section-subtitle">Specialized agents designed to execute specific tasks efficiently</p>
+                    </div>
+                    <div class="cards-grid">
+                        <div class="card">
+                            <div class="card-header">
+                                <span class="card-eyebrow">Task Agent</span>
+                                <div class="card-title-row">
+                                    <div class="card-icon">
+                                        <span class="material-icons">email</span>
+                                    </div>
+                                    <h3 class="card-title">Email Marketing Agent</h3>
+                                </div>
+                            </div>
+                            <p class="card-description">Automates email campaign creation, A/B testing, and performance optimization based on audience segmentation.</p>
+                            <div class="card-footer">
+                                <div class="card-meta">
+                                    <span class="meta-badge">High automation</span>
+                                </div>
+                                <button class="deploy-button">
+                                    Deploy
+                                    <span class="material-icons">arrow_forward</span>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="card">
+                            <div class="card-header">
+                                <span class="card-eyebrow">Task Agent</span>
+                                <div class="card-title-row">
+                                    <div class="card-icon">
+                                        <span class="material-icons">schedule</span>
+                                    </div>
+                                    <h3 class="card-title">Social Media Scheduler</h3>
+                                </div>
+                            </div>
+                            <p class="card-description">Schedules and publishes content across multiple social media platforms with optimal timing and engagement analysis.</p>
+                            <div class="card-footer">
+                                <div class="card-meta">
+                                    <span class="meta-badge">Real-time scheduling</span>
+                                </div>
+                                <button class="deploy-button">
+                                    Deploy
+                                    <span class="material-icons">arrow_forward</span>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="card">
+                            <div class="card-header">
+                                <span class="card-eyebrow">Task Agent</span>
+                                <div class="card-title-row">
+                                    <div class="card-icon">
+                                        <span class="material-icons">person_search</span>
+                                    </div>
+                                    <h3 class="card-title">Lead Generation Agent</h3>
+                                </div>
+                            </div>
+                            <p class="card-description">Identifies and qualifies potential customers using advanced web scraping and data enrichment techniques.</p>
+                            <div class="card-footer">
+                                <div class="card-meta">
+                                    <span class="meta-badge">Smart qualification</span>
+                                </div>
+                                <button class="deploy-button">
+                                    Deploy
+                                    <span class="material-icons">arrow_forward</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Goal-based Agents Tab -->
+                <div class="tab-content" id="goal-agents">
+                    <div class="section-header">
+                        <h2 class="section-title">Goal-based Agents</h2>
+                        <p class="section-subtitle">Strategic agents focused on achieving long-term business outcomes</p>
+                    </div>
+                    <div class="cards-grid">
+                        <div class="card">
+                            <div class="card-header">
+                                <span class="card-eyebrow">Goal Agent</span>
+                                <div class="card-title-row">
+                                    <div class="card-icon">
+                                        <span class="material-icons">trending_up</span>
+                                    </div>
+                                    <h3 class="card-title">Revenue Growth Agent</h3>
+                                </div>
+                            </div>
+                            <p class="card-description">Analyzes market trends, customer behavior, and competitive landscape to develop revenue optimization strategies.</p>
+                            <div class="card-footer">
+                                <div class="card-meta">
+                                    <span class="meta-badge">Strategic planning</span>
+                                </div>
+                                <button class="deploy-button">
+                                    Deploy
+                                    <span class="material-icons">arrow_forward</span>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="card">
+                            <div class="card-header">
+                                <span class="card-eyebrow">Goal Agent</span>
+                                <div class="card-title-row">
+                                    <div class="card-icon">
+                                        <span class="material-icons">favorite</span>
+                                    </div>
+                                    <h3 class="card-title">Customer Retention Agent</h3>
+                                </div>
+                            </div>
+                            <p class="card-description">Monitors customer satisfaction, predicts churn risk, and develops personalized retention strategies.</p>
+                            <div class="card-footer">
+                                <div class="card-meta">
+                                    <span class="meta-badge">Predictive insights</span>
+                                </div>
+                                <button class="deploy-button">
+                                    Deploy
+                                    <span class="material-icons">arrow_forward</span>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="card">
+                            <div class="card-header">
+                                <span class="card-eyebrow">Goal Agent</span>
+                                <div class="card-title-row">
+                                    <div class="card-icon">
+                                        <span class="material-icons">public</span>
+                                    </div>
+                                    <h3 class="card-title">Market Expansion Agent</h3>
+                                </div>
+                            </div>
+                            <p class="card-description">Identifies new market opportunities, analyzes competitive landscapes, and develops expansion strategies.</p>
+                            <div class="card-footer">
+                                <div class="card-meta">
+                                    <span class="meta-badge">Market analysis</span>
+                                </div>
+                                <button class="deploy-button">
+                                    Deploy
+                                    <span class="material-icons">arrow_forward</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Squads Tab -->
+                <div class="tab-content" id="squads">
+                    <div class="section-header">
+                        <h2 class="section-title">Squads</h2>
+                        <p class="section-subtitle">Collaborative teams of agents working together to achieve complex objectives</p>
+                    </div>
+                    <div class="cards-grid">
+                        <div class="card">
+                            <div class="card-header">
+                                <span class="card-eyebrow">Squad</span>
+                                <div class="card-title-row">
+                                    <div class="card-icon">
+                                        <span class="material-icons">groups</span>
+                                    </div>
+                                    <h3 class="card-title">Marketing Automation Squad</h3>
+                                </div>
+                            </div>
+                            <p class="card-description">A coordinated team of agents handling email marketing, social media scheduling, and lead generation for comprehensive marketing automation.</p>
+                            <div class="card-footer">
+                                <div class="card-meta">
+                                    <span class="meta-badge">Multi-agent coordination</span>
+                                </div>
+                                <button class="deploy-button">
+                                    Deploy
+                                    <span class="material-icons">arrow_forward</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // Tab functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const tabs = document.querySelectorAll('.tab');
+            const tabContents = document.querySelectorAll('.tab-content');
+
+            tabs.forEach(tab => {
+                tab.addEventListener('click', function() {
+                    const targetTab = this.getAttribute('data-tab');
+                    
+                    // Remove active class from all tabs and contents
+                    tabs.forEach(t => {
+                        t.classList.remove('active');
+                        t.setAttribute('aria-selected', 'false');
+                    });
+                    tabContents.forEach(content => {
+                        content.classList.remove('active');
+                    });
+                    
+                    // Add active class to clicked tab and corresponding content
+                    this.classList.add('active');
+                    this.setAttribute('aria-selected', 'true');
+                    document.getElementById(targetTab).classList.add('active');
+                });
+            });
+
+            // Search functionality
+            const searchInput = document.querySelector('.search-input');
+            searchInput.addEventListener('input', function() {
+                const searchTerm = this.value.toLowerCase();
+                const cards = document.querySelectorAll('.card');
+                
+                cards.forEach(card => {
+                    const title = card.querySelector('.card-title').textContent.toLowerCase();
+                    const description = card.querySelector('.card-description').textContent.toLowerCase();
+                    
+                    if (title.includes(searchTerm) || description.includes(searchTerm)) {
+                        card.style.display = 'block';
+                    } else {
+                        card.style.display = searchTerm ? 'none' : 'block';
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
