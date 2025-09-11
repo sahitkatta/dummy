@@ -54,17 +54,19 @@
 
         <!-- Main Content Area -->
         <main class="main-content">
-            <!-- Page Header -->
-            <div class="content-header">
-                <div class="header-text">
-                    <h1 class="page-title">OneTrue Assist</h1>
-                    <p class="page-subtitle">Browse and deploy assistants, agents, and squads for your workflow</p>
+            <!-- Default Content -->
+            <div id="default-content">
+                <!-- Page Header -->
+                <div class="content-header">
+                    <div class="header-text">
+                        <h1 class="page-title">OneTrue Assist</h1>
+                        <p class="page-subtitle">Browse and deploy assistants, agents, and squads for your workflow</p>
+                    </div>
+                    <div class="search-container">
+                        <span class="material-icons">search</span>
+                        <input type="text" class="search-input" placeholder="Search assistants, agents, and squads…">
+                    </div>
                 </div>
-                <div class="search-container">
-                    <span class="material-icons">search</span>
-                    <input type="text" class="search-input" placeholder="Search assistants, agents, and squads…">
-                </div>
-            </div>
 
             <!-- Tabs Navigation -->
             <div class="tabs-container">
@@ -331,6 +333,273 @@
                                 </button>
                             </div>
                         </div>
+                    </div>
+                </div>
+            </div>
+            </div>
+
+            <!-- Chatbot Content -->
+            <div id="chatbot-content" class="chatbot-content" style="display: none;">
+                <!-- Chatbot Header -->
+                <div class="chatbot-header">
+                    <div class="chatbot-title">
+                        <button class="chatbot-close" id="chatbot-close">
+                            <span class="material-icons">chevron_left</span>
+                        </button>
+                        <div class="chatbot-info">
+                            <h3>Data Onboarding Assistant</h3>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Chat Messages -->
+                <div class="chatbot-messages" id="chatbot-messages">
+                    <!-- Messages will be added here dynamically -->
+                </div>
+
+                <!-- Chat Input (pinned to bottom) -->
+                <div class="chatbot-input-container" id="chatbot-input-container" style="display: none;">
+                    <div class="chatbot-input">
+                        <input type="text" id="chatbot-input" placeholder="Ask Onboarding Assistant...">
+                        <button class="chatbot-send" id="chatbot-send">
+                            <span class="material-icons">send</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Welcome Section -->
+                <div class="chatbot-welcome" id="chatbot-welcome">
+                    <div class="welcome-content">
+                        <!-- Animated Empty State Illustration -->
+                        <div class="empty-state-illustration">
+                            <div class="empty-state-icon-container animate-scale-in">
+                                <div class="empty-state-icon-bg animate-pulse"></div>
+                                <div class="chat-icon">
+                                    <img src="./logo.svg" alt="Data Onboarding Assistant" style="margin-top: 15px;">
+                                </div>
+                                <div class="rotating-ring">
+                                    <div class="empty-state-icon-ring"></div>
+                                </div>
+                            </div>
+
+                            <div class="empty-state-decoration">
+                                <div class="decoration-dot dot-1 animate-pulse"></div>
+                                <div class="decoration-dot dot-2 animate-pulse"></div>
+                                <div class="decoration-dot dot-3 animate-pulse"></div>
+
+                                <div class="decoration-line line-1 animate-slide-in-right delay-300"></div>
+                                <div class="decoration-line line-2 animate-slide-in-left delay-400"></div>
+                            </div>
+                        </div>
+
+                        <div class="welcome-title">
+                            <h2>Welcome to Data Onboarding Assistant</h2>
+                        </div>
+                    </div>
+                    
+                    <!-- Main Input -->
+                    <div class="main-input-container">
+                        <div class="main-input">
+                            <button class="input-attach">
+                                <span class="material-icons">add</span>
+                            </button>
+                            <input type="text" id="main-chatbot-input" placeholder="Message Data Onboarding Assistant">
+                            <button class="input-mic">
+                                <span class="material-icons">mic</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Suggestion Boxes -->
+                    <div class="suggestion-boxes">
+                        <button class="suggestion-box" data-suggestion="Onboard a New Data Asset">
+                            <div class="suggestion-content">
+                                <div class="suggestion-title-row">
+                                    <div class="suggestion-icon">
+                                        <span class="material-icons">auto_awesome</span>
+                                    </div>
+                                    <h4>Onboard  Data Asset</h4>
+                                </div>
+                                <div class="suggestion-header">
+                                    <span class="category-chip">Onboard Help</span>
+                                </div>
+                                <div class="suggestion-separator"></div>
+                                <p class="suggestion-prompt">Help me onboard a data asset</p>
+                            </div>
+                        </button>
+                        
+                        <button class="suggestion-box" data-suggestion="Help me set up data source connections for the onboarding process">
+                            <div class="suggestion-content">
+                                <div class="suggestion-title-row">
+                                    <div class="suggestion-icon">
+                                        <span class="material-icons">auto_awesome</span>
+                                    </div>
+                                    <h4>Data Connections</h4>
+                                </div>
+                                <div class="suggestion-header">
+                                    <span class="category-chip">Connection Setup</span>
+                                </div>
+                                <div class="suggestion-separator"></div>
+                                <p class="suggestion-prompt">Help me set up data source connections for the onboarding process</p>
+                            </div>
+                        </button>
+                        
+                        <button class="suggestion-box" data-suggestion="How do I add a new connector to my data sources?">
+                            <div class="suggestion-content">
+                                <div class="suggestion-title-row">
+                                    <div class="suggestion-icon">
+                                        <span class="material-icons">auto_awesome</span>
+                                    </div>
+                                    <h4>General</h4>
+                                </div>
+                                <div class="suggestion-header">
+                                    <span class="category-chip">General</span>
+                                </div>
+                                <div class="suggestion-separator"></div>
+                                <p class="suggestion-prompt">How do I add a new connector to my data sources?</p>
+                            </div>
+                        </button>
+                    </div>
+
+                    <!-- See More/Less Link -->
+                    <div class="see-more">
+                        <button class="see-more-btn" id="see-more-btn">
+                            <span>See more</span>
+                            <span class="material-icons">keyboard_arrow_down</span>
+                        </button>
+                    </div>
+
+                    <!-- Additional Suggestion Boxes (hidden by default) -->
+                    <div class="additional-suggestions" id="additional-suggestions" style="display: none;">
+                        <!-- First three: Getting Started, Onboard Help, Data Connections -->
+                        <button class="suggestion-box" data-suggestion="Help me in data onboarding – I need guidance on how to begin the data integration process">
+                            <div class="suggestion-content">
+                                <div class="suggestion-title-row">
+                                    <div class="suggestion-icon">
+                                        <span class="material-icons">auto_awesome</span>
+                                    </div>
+                                    <h4>Getting Started with Data Integration</h4>
+                                </div>
+                                <div class="suggestion-header">
+                                    <span class="category-chip">Data Sources</span>
+                                </div>
+                                <div class="suggestion-separator"></div>
+                                <p class="suggestion-prompt">Help me in data onboarding – I need guidance on how to begin the data integration process</p>
+                            </div>
+                        </button>
+                        
+                        <button class="suggestion-box" data-suggestion="Help me onboard a data asset">
+                            <div class="suggestion-content">
+                                <div class="suggestion-title-row">
+                                    <div class="suggestion-icon">
+                                        <span class="material-icons">auto_awesome</span>
+                                    </div>
+                                    <h4>Onboard a New Data Asset</h4>
+                                </div>
+                                <div class="suggestion-header">
+                                    <span class="category-chip">Onboard Help</span>
+                                </div>
+                                <div class="suggestion-separator"></div>
+                                <p class="suggestion-prompt">Help me onboard a data asset</p>
+                            </div>
+                        </button>
+                        
+                        <button class="suggestion-box" data-suggestion="Help me set up data source connections for the onboarding process">
+                            <div class="suggestion-content">
+                                <div class="suggestion-title-row">
+                                    <div class="suggestion-icon">
+                                        <span class="material-icons">auto_awesome</span>
+                                    </div>
+                                    <h4>Set Up Data Source Connections</h4>
+                                </div>
+                                <div class="suggestion-header">
+                                    <span class="category-chip">Connection Setup</span>
+                                </div>
+                                <div class="suggestion-separator"></div>
+                                <p class="suggestion-prompt">Help me set up data source connections for the onboarding process</p>
+                            </div>
+                        </button>
+                        
+                        <!-- New prompts -->
+                        <button class="suggestion-box" data-suggestion="I want to start data onboarding process – please guide me through the requirements">
+                            <div class="suggestion-content">
+                                <div class="suggestion-title-row">
+                                    <div class="suggestion-icon">
+                                        <span class="material-icons">auto_awesome</span>
+                                    </div>
+                                    <h4>Begin Onboarding</h4>
+                                </div>
+                                <div class="suggestion-header">
+                                    <span class="category-chip">Data Pipeline</span>
+                                </div>
+                                <div class="suggestion-separator"></div>
+                                <p class="suggestion-prompt">I want to start data onboarding process – please guide me through the requirements</p>
+                            </div>
+                        </button>
+                        
+                        <button class="suggestion-box" data-suggestion="What are common issues during data onboarding and how to resolve them?">
+                            <div class="suggestion-content">
+                                <div class="suggestion-title-row">
+                                    <div class="suggestion-icon">
+                                        <span class="material-icons">auto_awesome</span>
+                                    </div>
+                                    <h4>Common Issues</h4>
+                                </div>
+                                <div class="suggestion-header">
+                                    <span class="category-chip">Troubleshooting</span>
+                                </div>
+                                <div class="suggestion-separator"></div>
+                                <p class="suggestion-prompt">What are common issues during data onboarding and how to resolve them?</p>
+                            </div>
+                        </button>
+                        
+                        <button class="suggestion-box" data-suggestion="What are the best practices for efficient and successful data onboarding?">
+                            <div class="suggestion-content">
+                                <div class="suggestion-title-row">
+                                    <div class="suggestion-icon">
+                                        <span class="material-icons">auto_awesome</span>
+                                    </div>
+                                    <h4>Optimization Tips</h4>
+                                </div>
+                                <div class="suggestion-header">
+                                    <span class="category-chip">Best Practices</span>
+                                </div>
+                                <div class="suggestion-separator"></div>
+                                <p class="suggestion-prompt">What are the best practices for efficient and successful data onboarding?</p>
+                            </div>
+                        </button>
+                        
+                        <button class="suggestion-box" data-suggestion="What are the prerequisites and checklist items before starting data onboarding?">
+                            <div class="suggestion-content">
+                                <div class="suggestion-title-row">
+                                    <div class="suggestion-icon">
+                                        <span class="material-icons">auto_awesome</span>
+                                    </div>
+                                    <h4>Pre-requisites</h4>
+                                </div>
+                                <div class="suggestion-header">
+                                    <span class="category-chip">Onboarding Checklist</span>
+                                </div>
+                                <div class="suggestion-separator"></div>
+                                <p class="suggestion-prompt">What are the prerequisites and checklist items before starting data onboarding?</p>
+                            </div>
+                        </button>
+                        
+                        <button class="suggestion-box" data-suggestion="What data validation steps should I follow during the onboarding process?">
+                            <div class="suggestion-content">
+                                <div class="suggestion-title-row">
+                                    <div class="suggestion-icon">
+                                        <span class="material-icons">auto_awesome</span>
+                                    </div>
+                                    <h4>Data Quality Check</h4>
+                                </div>
+                                <div class="suggestion-header">
+                                    <span class="category-chip">Data Validation</span>
+                                </div>
+                                <div class="suggestion-separator"></div>
+                                <p class="suggestion-prompt">What data validation steps should I follow during the onboarding process?</p>
+                            </div>
+                        </button>
                     </div>
                 </div>
             </div>

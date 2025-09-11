@@ -6,6 +6,7 @@ document.addEventListener('DOMContentLoaded', function() {
     initializeSearch();
     initializeNavigation();
     initializeMobileMenu();
+    initializeChatbot();
 });
 
 // Tab Functionality
@@ -187,17 +188,22 @@ function initializeDeployButtons() {
             const card = this.closest('.card');
             const title = card.querySelector('.card-title')?.textContent || 'Unknown';
             
-            // Add loading state
-            const originalText = this.innerHTML;
-            this.innerHTML = '<span class="material-icons">hourglass_empty</span> Deploying...';
-            this.disabled = true;
-            
-            // Simulate deployment process
-            setTimeout(() => {
-                this.innerHTML = originalText;
-                this.disabled = false;
-                console.log(`${title} deployed successfully!`);
-            }, 2000);
+            // Check if it's the Data Onboarding Assistant
+            if (title === 'Data Onboarding Assistant') {
+                openChatbot();
+            } else {
+                // Add loading state for other assistants
+                const originalText = this.innerHTML;
+                this.innerHTML = '<span class="material-icons">hourglass_empty</span> Deploying...';
+                this.disabled = true;
+                
+                // Simulate deployment process
+                setTimeout(() => {
+                    this.innerHTML = originalText;
+                    this.disabled = false;
+                    console.log(`${title} deployed successfully!`);
+                }, 2000);
+            }
         });
     });
 }
@@ -252,3 +258,646 @@ function debounce(func, wait) {
 const debouncedSearch = debounce(function(searchTerm) {
     // Search logic here
 }, 300);
+
+// Chatbot Functionality
+function initializeChatbot() {
+    const defaultContent = document.getElementById('default-content');
+    const chatbotContent = document.getElementById('chatbot-content');
+    const chatbotWelcome = document.getElementById('chatbot-welcome');
+    const chatbotMessages = document.getElementById('chatbot-messages');
+    const chatbotInputContainer = document.getElementById('chatbot-input-container');
+    const chatbotClose = document.getElementById('chatbot-close');
+    const mainInput = document.getElementById('main-chatbot-input');
+    const chatbotInput = document.getElementById('chatbot-input');
+    const chatbotSend = document.getElementById('chatbot-send');
+    const seeMoreBtn = document.getElementById('see-more-btn');
+    const additionalSuggestions = document.getElementById('additional-suggestions');
+    const suggestionBoxes = document.querySelectorAll('.suggestion-box');
+
+    // Close chatbot and return to main content
+    chatbotClose.addEventListener('click', closeChatbot);
+
+    // Send message on Enter key (main input)
+    mainInput.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+            sendMessage();
+        }
+    });
+
+    // Send message on Enter key (chat input)
+    chatbotInput.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+            sendChatMessage();
+        }
+    });
+
+    // Send message on button click
+    chatbotSend.addEventListener('click', sendChatMessage);
+
+    // Handle see more button click
+    seeMoreBtn.addEventListener('click', toggleAdditionalSuggestions);
+
+    // Handle suggestion box clicks (initial boxes)
+    suggestionBoxes.forEach(box => {
+        box.addEventListener('click', function() {
+            const suggestion = this.getAttribute('data-suggestion');
+            mainInput.value = suggestion;
+            sendMessage();
+        });
+    });
+
+    // Handle additional suggestion box clicks
+    function handleAdditionalSuggestions() {
+        const additionalBoxes = additionalSuggestions.querySelectorAll('.suggestion-box');
+        additionalBoxes.forEach(box => {
+            box.addEventListener('click', function() {
+                const suggestion = this.getAttribute('data-suggestion');
+                mainInput.value = suggestion;
+                sendMessage();
+            });
+        });
+    }
+
+    function openChatbot() {
+        defaultContent.style.display = 'none';
+        chatbotContent.style.display = 'flex';
+        mainInput.focus();
+    }
+
+    function closeChatbot() {
+        chatbotContent.style.display = 'none';
+        defaultContent.style.display = 'block';
+        // Reset chatbot state
+        chatbotWelcome.style.display = 'flex';
+        chatbotMessages.innerHTML = '';
+        chatbotInputContainer.style.display = 'none';
+        chatbotMessages.classList.remove('active');
+        // Reset see more state
+        additionalSuggestions.style.display = 'none';
+        seeMoreBtn.classList.remove('expanded');
+        seeMoreBtn.querySelector('span:first-child').textContent = 'See more';
+    }
+
+    function toggleAdditionalSuggestions() {
+        const isExpanded = additionalSuggestions.style.display !== 'none';
+        
+        if (isExpanded) {
+            // Hide additional suggestions
+            additionalSuggestions.style.display = 'none';
+            seeMoreBtn.classList.remove('expanded');
+            seeMoreBtn.querySelector('span:first-child').textContent = 'See more';
+        } else {
+            // Show additional suggestions
+            additionalSuggestions.style.display = 'grid';
+            seeMoreBtn.classList.add('expanded');
+            seeMoreBtn.querySelector('span:first-child').textContent = 'See less';
+            // Add event listeners to additional suggestions
+            handleAdditionalSuggestions();
+        }
+    }
+
+    function sendMessage() {
+        const message = mainInput.value.trim();
+        if (!message) return;
+
+        // Hide welcome section and show messages
+        chatbotWelcome.style.display = 'none';
+        chatbotMessages.classList.add('active');
+        chatbotInputContainer.style.display = 'block';
+
+        // Add user message
+        addMessage(message, 'user');
+        mainInput.value = '';
+
+        // Simulate assistant response
+        setTimeout(() => {
+            const response = getAssistantResponse(message);
+            addMessage(response, 'assistant');
+        }, 1000);
+    }
+
+    function sendChatMessage() {
+        const message = chatbotInput.value.trim();
+        if (!message) return;
+
+        // Add user message
+        addMessage(message, 'user');
+        chatbotInput.value = '';
+
+        // Simulate assistant response
+        setTimeout(() => {
+            const response = getAssistantResponse(message);
+            addMessage(response, 'assistant');
+        }, 1000);
+    }
+
+    function addMessage(content, sender) {
+        const messageDiv = document.createElement('div');
+        messageDiv.className = `message ${sender}-message`;
+        
+        const avatar = document.createElement('div');
+        avatar.className = 'message-avatar';
+        avatar.innerHTML = `<span class="material-icons">${sender === 'user' ? 'person' : 'smart_toy'}</span>`;
+        
+        const messageContent = document.createElement('div');
+        messageContent.className = 'message-content';
+        
+        if (sender === 'assistant' && typeof content === 'object' && content.type === 'form') {
+            // Create form response
+            const greeting = document.createElement('p');
+            greeting.textContent = content.greeting;
+            greeting.style.marginBottom = '16px';
+            messageContent.appendChild(greeting);
+            
+            const form = document.createElement('form');
+            form.className = 'chatbot-form';
+            
+            // Add form grid if specified
+            if (content.form.useGrid) {
+                form.className += ' form-grid';
+            }
+            
+            // Add dropdowns
+            if (content.form.dropdowns) {
+                content.form.dropdowns.forEach(dropdown => {
+                    const dropdownContainer = document.createElement('div');
+                    dropdownContainer.className = `form-field ${dropdown.fullWidth ? 'full-width' : ''}`;
+                    
+                    const label = document.createElement('label');
+                    label.textContent = dropdown.label;
+                    label.setAttribute('for', dropdown.id);
+                    
+                    const materialSelect = document.createElement('div');
+                    materialSelect.className = 'material-select';
+                    
+                    const select = document.createElement('select');
+                    select.id = dropdown.id;
+                    select.name = dropdown.id;
+                    select.required = dropdown.required || false;
+                    
+                    // Add default option
+                    const defaultOption = document.createElement('option');
+                    defaultOption.value = '';
+                    defaultOption.textContent = '';
+                    select.appendChild(defaultOption);
+                    
+                    // Add options
+                    dropdown.options.forEach(option => {
+                        const optionElement = document.createElement('option');
+                        optionElement.value = option;
+                        optionElement.textContent = option;
+                        select.appendChild(optionElement);
+                    });
+                    
+                    const selectLabel = document.createElement('span');
+                    selectLabel.className = 'select-label';
+                    selectLabel.textContent = dropdown.placeholder || `Select ${dropdown.label}`;
+                    
+                    materialSelect.appendChild(select);
+                    materialSelect.appendChild(selectLabel);
+                    
+                    dropdownContainer.appendChild(label);
+                    dropdownContainer.appendChild(materialSelect);
+                    form.appendChild(dropdownContainer);
+                });
+            }
+            
+            // Add text fields
+            if (content.form.textFields) {
+                content.form.textFields.forEach(textField => {
+                    const fieldContainer = document.createElement('div');
+                    fieldContainer.className = `form-field ${textField.fullWidth ? 'full-width' : ''}`;
+                    
+                    const label = document.createElement('label');
+                    label.textContent = textField.label;
+                    label.setAttribute('for', textField.id);
+                    
+                    const materialInput = document.createElement('div');
+                    materialInput.className = 'material-input';
+                    
+                    const input = document.createElement('input');
+                    input.type = textField.type || 'text';
+                    input.id = textField.id;
+                    input.name = textField.id;
+                    input.required = textField.required || false;
+                    
+                    const inputLabel = document.createElement('span');
+                    inputLabel.className = 'input-label';
+                    inputLabel.textContent = textField.placeholder || textField.label;
+                    
+                    materialInput.appendChild(input);
+                    materialInput.appendChild(inputLabel);
+                    
+                    fieldContainer.appendChild(label);
+                    fieldContainer.appendChild(materialInput);
+                    form.appendChild(fieldContainer);
+                });
+            }
+            
+            // Add submit button
+            const submitButton = document.createElement('button');
+            submitButton.type = 'submit';
+            submitButton.className = 'form-submit-btn';
+            submitButton.textContent = content.form.submitText;
+            
+            form.appendChild(submitButton);
+            messageContent.appendChild(form);
+            
+            // Add form submit handler
+            form.addEventListener('submit', (e) => {
+                e.preventDefault();
+                const formData = new FormData(form);
+                const formValues = {};
+                for (let [key, value] of formData.entries()) {
+                    formValues[key] = value;
+                }
+                
+                // Add user message showing form submission
+                const submissionText = `Submitted: ${Object.entries(formValues).map(([key, value]) => `${key}: ${value}`).join(', ')}`;
+                addMessage(submissionText, 'user');
+                
+                // Simulate next response
+                setTimeout(() => {
+                    const nextResponse = getNextFormResponse(formValues);
+                    addMessage(nextResponse, 'assistant');
+                }, 1000);
+            });
+            
+        } else {
+            // Regular text message
+            messageContent.innerHTML = `<p>${content}</p>`;
+        }
+        
+        messageDiv.appendChild(avatar);
+        messageDiv.appendChild(messageContent);
+        
+        chatbotMessages.appendChild(messageDiv);
+        chatbotMessages.scrollTop = chatbotMessages.scrollHeight;
+    }
+
+    function getAssistantResponse(userMessage) {
+        const lowerMessage = userMessage.toLowerCase();
+        
+        if (lowerMessage.includes('onboard') || lowerMessage.includes('data asset')) {
+            return {
+                type: 'form',
+                greeting: "Welcome! Let's set up your data onboarding project. Please provide the following information:",
+                form: {
+                    useGrid: true,
+                    dropdowns: [
+                        {
+                            id: 'entity-type',
+                            label: 'Entity Type',
+                            placeholder: 'Choose entity type',
+                            options: ['Use Existing Entities', 'Create New Entities'],
+                            required: true
+                        },
+                        {
+                            id: 'project-category',
+                            label: 'Project Category',
+                            placeholder: 'Select category',
+                            options: ['Data Warehouse', 'Data Lake', 'Analytics Platform', 'ML Pipeline'],
+                            required: true
+                        }
+                    ],
+                    textFields: [
+                        {
+                            id: 'project-name',
+                            label: 'Project Name',
+                            placeholder: 'Enter project name',
+                            required: true,
+                            fullWidth: true
+                        }
+                    ],
+                    submitText: 'Start Onboarding'
+                }
+            };
+        } else if (lowerMessage.includes('connection') || lowerMessage.includes('connect')) {
+            return {
+                type: 'form',
+                greeting: "Let's configure your data source connection. Please provide the following details:",
+                form: {
+                    useGrid: true,
+                    dropdowns: [
+                        {
+                            id: 'provider',
+                            label: 'Data Provider',
+                            placeholder: 'Select provider',
+                            options: ['AWS S3', 'Azure Blob Storage', 'Google Cloud Storage', 'MySQL Database', 'PostgreSQL', 'MongoDB', 'API Endpoint', 'File System'],
+                            required: true
+                        },
+                        {
+                            id: 'connection-type',
+                            label: 'Connection Type',
+                            placeholder: 'Choose connection type',
+                            options: ['Direct Connection', 'SSH Tunnel', 'VPN', 'Proxy'],
+                            required: true
+                        },
+                        {
+                            id: 'authentication',
+                            label: 'Authentication',
+                            placeholder: 'Select auth method',
+                            options: ['Username/Password', 'API Key', 'OAuth 2.0', 'Certificate', 'IAM Role'],
+                            required: true
+                        },
+                        {
+                            id: 'encryption',
+                            label: 'Encryption',
+                            placeholder: 'Choose encryption',
+                            options: ['TLS 1.2', 'TLS 1.3', 'SSL', 'None'],
+                            required: true
+                        }
+                    ],
+                    textFields: [
+                        {
+                            id: 'hostname',
+                            label: 'Hostname/Endpoint',
+                            placeholder: 'Enter hostname or endpoint URL',
+                            required: true
+                        },
+                        {
+                            id: 'port',
+                            label: 'Port',
+                            placeholder: 'Enter port number',
+                            type: 'number',
+                            required: true
+                        },
+                        {
+                            id: 'database-name',
+                            label: 'Database Name',
+                            placeholder: 'Enter database name',
+                            required: true
+                        },
+                        {
+                            id: 'owner-email',
+                            label: 'Owner Email',
+                            placeholder: 'Enter owner email address',
+                            type: 'email',
+                            required: true,
+                            fullWidth: true
+                        }
+                    ],
+                    submitText: 'Configure Connection'
+                }
+            };
+        } else if (lowerMessage.includes('connector') || lowerMessage.includes('add')) {
+            return {
+                type: 'form',
+                greeting: "Let's add a new connector to your data sources. Please configure the following parameters:",
+                form: {
+                    useGrid: true,
+                    dropdowns: [
+                        {
+                            id: 'connector-type',
+                            label: 'Connector Type',
+                            placeholder: 'Select connector type',
+                            options: ['Database Connector', 'File Connector', 'API Connector', 'Cloud Connector', 'Streaming Connector', 'ETL Connector'],
+                            required: true
+                        },
+                        {
+                            id: 'data-format',
+                            label: 'Data Format',
+                            placeholder: 'Choose data format',
+                            options: ['JSON', 'CSV', 'XML', 'Parquet', 'Avro', 'ORC', 'Binary'],
+                            required: true
+                        },
+                        {
+                            id: 'sync-frequency',
+                            label: 'Sync Frequency',
+                            placeholder: 'Select sync frequency',
+                            options: ['Real-time', 'Every 5 minutes', 'Every hour', 'Daily', 'Weekly', 'Manual'],
+                            required: true
+                        },
+                        {
+                            id: 'error-handling',
+                            label: 'Error Handling',
+                            placeholder: 'Choose error handling',
+                            options: ['Stop on Error', 'Skip and Continue', 'Retry with Backoff', 'Send to Dead Letter Queue'],
+                            required: true
+                        }
+                    ],
+                    textFields: [
+                        {
+                            id: 'connector-name',
+                            label: 'Connector Name',
+                            placeholder: 'Enter connector name',
+                            required: true
+                        },
+                        {
+                            id: 'endpoint-url',
+                            label: 'Endpoint URL',
+                            placeholder: 'Enter endpoint URL',
+                            type: 'url',
+                            required: true
+                        },
+                        {
+                            id: 'batch-size',
+                            label: 'Batch Size',
+                            placeholder: 'Enter batch size (e.g., 1000)',
+                            type: 'number',
+                            required: true
+                        },
+                        {
+                            id: 'timeout',
+                            label: 'Timeout (seconds)',
+                            placeholder: 'Enter timeout in seconds',
+                            type: 'number',
+                            required: true
+                        }
+                    ],
+                    submitText: 'Add Connector'
+                }
+            };
+        } else if (lowerMessage.includes('start') || lowerMessage.includes('begin')) {
+            return {
+                type: 'form',
+                greeting: "Let's begin your data onboarding journey! Please provide the following project details:",
+                form: {
+                    useGrid: true,
+                    dropdowns: [
+                        {
+                            id: 'project-type',
+                            label: 'Project Type',
+                            placeholder: 'Select project type',
+                            options: ['Data Warehouse', 'Data Lake', 'Analytics Platform', 'ML Pipeline', 'Real-time Analytics', 'Data Science Lab'],
+                            required: true
+                        },
+                        {
+                            id: 'data-volume',
+                            label: 'Expected Data Volume',
+                            placeholder: 'Choose data volume',
+                            options: ['Small (< 1GB)', 'Medium (1GB - 100GB)', 'Large (100GB - 1TB)', 'Enterprise (> 1TB)', 'Unlimited'],
+                            required: true
+                        },
+                        {
+                            id: 'team-size',
+                            label: 'Team Size',
+                            placeholder: 'Select team size',
+                            options: ['1-5 users', '6-20 users', '21-50 users', '51-100 users', '100+ users'],
+                            required: true
+                        },
+                        {
+                            id: 'compliance',
+                            label: 'Compliance Requirements',
+                            placeholder: 'Select compliance',
+                            options: ['GDPR', 'HIPAA', 'SOX', 'PCI DSS', 'None', 'Other'],
+                            required: true
+                        }
+                    ],
+                    textFields: [
+                        {
+                            id: 'project-name',
+                            label: 'Project Name',
+                            placeholder: 'Enter project name',
+                            required: true
+                        },
+                        {
+                            id: 'description',
+                            label: 'Project Description',
+                            placeholder: 'Brief description of your project',
+                            required: true,
+                            fullWidth: true
+                        }
+                    ],
+                    submitText: 'Create Project'
+                }
+            };
+        } else if (lowerMessage.includes('help') || lowerMessage.includes('guidance')) {
+            return {
+                type: 'form',
+                greeting: "I'm here to help! Let me understand your specific needs and provide targeted assistance:",
+                form: {
+                    useGrid: true,
+                    dropdowns: [
+                        {
+                            id: 'help-category',
+                            label: 'Help Category',
+                            placeholder: 'Select help category',
+                            options: ['Getting Started', 'Data Sources', 'Connections', 'Troubleshooting', 'Best Practices', 'Performance Optimization', 'Security'],
+                            required: true
+                        },
+                        {
+                            id: 'urgency',
+                            label: 'Urgency Level',
+                            placeholder: 'Select urgency',
+                            options: ['Low', 'Medium', 'High', 'Critical'],
+                            required: true
+                        },
+                        {
+                            id: 'experience',
+                            label: 'Experience Level',
+                            placeholder: 'Select experience',
+                            options: ['Beginner', 'Intermediate', 'Advanced', 'Expert'],
+                            required: true
+                        }
+                    ],
+                    textFields: [
+                        {
+                            id: 'specific-issue',
+                            label: 'Specific Issue or Question',
+                            placeholder: 'Describe your specific issue or question',
+                            required: true,
+                            fullWidth: true
+                        }
+                    ],
+                    submitText: 'Get Help'
+                }
+            };
+        } else {
+            return {
+                type: 'form',
+                greeting: "Welcome to the Data Onboarding Assistant! Let me help you get started. What would you like to do?",
+                form: {
+                    useGrid: true,
+                    dropdowns: [
+                        {
+                            id: 'onboarding-step',
+                            label: 'Primary Action',
+                            placeholder: 'What would you like to do?',
+                            options: ['Start New Onboarding', 'Configure Data Source', 'Add Connector', 'Get Help', 'Troubleshoot Issues', 'View Documentation'],
+                            required: true
+                        },
+                        {
+                            id: 'data-type',
+                            label: 'Data Type',
+                            placeholder: 'What type of data?',
+                            options: ['Structured Data', 'Semi-structured Data', 'Unstructured Data', 'Mixed Data Types', 'Not Sure'],
+                            required: true
+                        }
+                    ],
+                    textFields: [
+                        {
+                            id: 'business-goal',
+                            label: 'Business Goal',
+                            placeholder: 'What are you trying to achieve?',
+                            required: true,
+                            fullWidth: true
+                        }
+                    ],
+                    submitText: 'Get Started'
+                }
+            };
+        }
+    }
+
+    function getNextFormResponse(formValues) {
+        // Simple follow-up responses based on form submissions
+        const keys = Object.keys(formValues);
+        if (keys.includes('entity-type')) {
+            return {
+                type: 'form',
+                greeting: "Great choice! Now let's configure your data source details:",
+                form: {
+                    dropdowns: [
+                        {
+                            id: 'data-type',
+                            label: 'Data Type',
+                            options: ['Structured Data', 'Semi-structured Data', 'Unstructured Data']
+                        }
+                    ],
+                    textFields: [
+                        {
+                            id: 'source-name',
+                            label: 'Source Name',
+                            placeholder: 'Enter data source name'
+                        }
+                    ],
+                    submitText: 'Configure Source'
+                }
+            };
+        } else if (keys.includes('provider')) {
+            return {
+                type: 'form',
+                greeting: "Excellent! Your data source configuration is complete. Let's proceed with data validation:",
+                form: {
+                    dropdowns: [
+                        {
+                            id: 'validation-level',
+                            label: 'Validation Level',
+                            options: ['Basic', 'Standard', 'Comprehensive']
+                        }
+                    ],
+                    submitText: 'Start Validation'
+                }
+            };
+        } else {
+            return {
+                type: 'form',
+                greeting: "Perfect! Your configuration has been saved. What would you like to do next?",
+                form: {
+                    dropdowns: [
+                        {
+                            id: 'next-action',
+                            label: 'Next Action',
+                            options: ['View Dashboard', 'Add Another Source', 'Configure Pipeline', 'Export Configuration']
+                        }
+                    ],
+                    submitText: 'Continue'
+                }
+            };
+        }
+    }
+
+    // Make openChatbot globally available
+    window.openChatbot = openChatbot;
+}
